@@ -2,7 +2,7 @@
 
 A modern weather forecasting Android app that provides real-time weather information and 14-day forecasts. Built with XML layouts, Retrofit, and MVVM architecture. The UI is elegant and minimal, designed with a smooth user experience in mind.
 
-![Weather App Screenshot](./preview.png) <!-- Replace with your screenshot path -->
+![Weather App Screenshot](./Image1.jpegg)
 
 ---
 
