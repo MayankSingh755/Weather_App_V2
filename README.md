@@ -39,7 +39,7 @@ A modern weather forecasting Android app that provides real-time weather informa
 
 ## 📂 Project Structure
 com.ionic.weatherappv2/
-├── data/
+  ├── data/
 │ ├── forecast/ # Forecast Models
 │ ├── realTime/ # Real-time Weather Models
 │ └── network/ # Retrofit setup
@@ -52,3 +52,28 @@ com.ionic.weatherappv2/
 │
 ├── MainActivity.kt # Main UI screen
 └── SplashActivity.kt # Animated splash screen
+
+---
+
+## 🔧 Technologies Used
+
+- **Kotlin**
+- **XML Layouts**
+- **Retrofit** - REST API integration
+- **ViewModel** & **LiveData** - lifecycle-aware data handling
+- **Material Components** - for UI elements
+- **MVVM Architecture**
+
+---
+
+## 🧠 How It Works
+
+1. **User enters a city name**
+2. `WeatherViewModel` makes two API calls:
+   - `getWeather()` for real-time data
+   - `getForecast()` for 14-day forecast
+3. API responses are wrapped using a `NetworkResponse` sealed class:
+   - `Success`, `Error`, `Loading`
+4. UI observes LiveData from ViewModel and updates the screen accordingly.
+
+---
