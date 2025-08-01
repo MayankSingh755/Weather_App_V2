@@ -93,8 +93,8 @@ class MainActivity : AppCompatActivity() {
 
                 is NetworkResponse.Success -> {
                     val forecast = result.data.forecast.forecastday[0].day
-                    binding.maxTemp.text = "Max Temp Today${forecast.maxtemp_c}°C"
-                    binding.minTemp.text = "Min Temp Today${forecast.mintemp_c}°C"
+                    binding.maxTemp.text = "Max ${forecast.maxtemp_c}°C"
+                    binding.minTemp.text = "Min ${forecast.mintemp_c}°C"
                 }
 
                 is NetworkResponse.Error -> {
