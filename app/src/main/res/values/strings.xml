@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Weather App V2</string>
+    <string name="weather_splash_screen">Weather Splash Screen</string>
+    <string name="weather_nforcast">Weather\nForcast</string>
+    <string name="weather_app">Weather App  by Mayank Singh</string>
+    <string name="search_for_any_city">Search for Any City</string>
+    <string name="_31_c">31°C</string>
+    <string name="today">Today</string>
+    <string name="ghaziabad">Ghaziabad</string>
+    <string name="designed_by_mayank_singh">Designed by Mayank Singh\nPowered By Free Weather API</string>
+    <string name="aqi">AQI</string>
+    <string name="pressure">Pressure</string>
+    <string name="wind_direction">Wind Direction</string>
+    <string name="visiblity">Visiblity</string>
+    <string name="wind_speed">Wind Speed</string>
+    <string name="humidity">Humidity</string>
+</resources>
