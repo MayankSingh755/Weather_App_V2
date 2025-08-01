@@ -1,4 +1,4 @@
-package com.ionic.weatherappv2.data
+package com.ionic.weatherappv2.data.realTime
 
 data class AirQuality(
     val co: String,

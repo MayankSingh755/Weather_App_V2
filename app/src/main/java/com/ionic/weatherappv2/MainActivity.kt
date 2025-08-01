@@ -1,5 +1,6 @@
 package com.ionic.weatherappv2
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.view.inputmethod.InputMethodManager
@@ -9,8 +10,8 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.ionic.weatherappv2.data.AirQuality
-import com.ionic.weatherappv2.data.calculateAQI
+import com.ionic.weatherappv2.data.realTime.AirQuality
+import com.ionic.weatherappv2.data.realTime.calculateAQI
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -23,6 +24,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private val viewModel: WeatherViewModel by viewModels()
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -47,7 +49,7 @@ class MainActivity : AppCompatActivity() {
         val dayFormat = SimpleDateFormat("EEEE", Locale.getDefault())
         binding.day.text = dayFormat.format(Date())
 
-        // Observe weather data
+        // Observe real time weather data
         viewModel.weatherResult.observe(this) { result ->
             when (result) {
                 is NetworkResponse.Loading -> {
@@ -65,9 +67,7 @@ class MainActivity : AppCompatActivity() {
                     binding.Pressure.text = "${weather.current.pressure_mb}mb" // Pressure
                     binding.visiblity.text = "${weather.current.vis_km}km" // Visibility
                     binding.aqi.text = "${calculateAQI(airQuality)}" // AQI
-                    binding.windDirection.text = "${weather.current.wind_dir}" // Wind Direction
-//                    binding.maxTemp.text = "${weather.forecast.forecast.forecastday[0].day.maxtemp_c}°C" // Max Temp
-//                    binding.maxTemp.text = "${weather.forecast.forecast.forecastday[0].day.mintemp_c}°C" // Min Temp
+                    binding.windDirection.text = weather.current.wind_dir.toString()// Wind Direction
 
                     when (weather.current.condition.text) {
                         "Clear Sky", "Sunny", "Clear" -> {
@@ -101,6 +101,22 @@ class MainActivity : AppCompatActivity() {
 
                 }
 
+                is NetworkResponse.Error -> {
+                    Toast.makeText(this, result.message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+        viewModel.forecastResult.observe(this) { result ->
+            when (result) {
+                is NetworkResponse.Loading -> {
+                    Toast.makeText(this, "Please, Wait while I am loading...☺\uFE0F", Toast.LENGTH_SHORT).show()
+                }
+                is NetworkResponse.Success -> {
+                    val weather = result.data
+                    binding.maxTemp.text = "${weather.forecast.forecastday[0].day.maxtemp_c}°C" // Max Temp
+                    binding.maxTemp.text = "${weather.forecast.forecastday[0].day.mintemp_c}°C" // Min Temp
+                }
                 is NetworkResponse.Error -> {
                     Toast.makeText(this, result.message, Toast.LENGTH_SHORT).show()
                 }
