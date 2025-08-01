@@ -38,21 +38,41 @@ A modern weather forecasting Android app that provides real-time weather informa
 ---
 
 ## 📂 Project Structure
+``
 com.ionic.weatherappv2/
-  ├── data/
-│ ├── forecast/ # Forecast Models
-│ ├── realTime/ # Real-time Weather Models
-│ └── network/ # Retrofit setup
-│ ├── NetworkResponse
-│ ├── RetrofitInstance
-│ └── WeatherApiService.kt
+│
+├── data/
+│   ├── forecast/                  # Forecast Models
+│   │   ├── Astro.kt
+│   │   ├── Condition.kt
+│   │   ├── Current.kt
+│   │   ├── Day.kt
+│   │   ├── Forecast.kt
+│   │   ├── Forecastday.kt
+│   │   ├── Hour.kt
+│   │   ├── Location.kt
+│   │   └── WeatherForecastModel.kt
+│   │
+│   ├── realTime/                 # Real-time Weather Models
+│   │   ├── AirQuality.kt
+│   │   ├── Astro.kt
+│   │   ├── Condition.kt
+│   │   ├── Current.kt
+│   │   ├── Location.kt
+│   │   └── WeatherRealTimeModel.kt
+│   │
+│   └── network/                  # Retrofit Setup
+│       ├── NetworkResponse.kt
+│       ├── RetrofitInstance.kt
+│       └── WeatherApiService.kt
 │
 ├── viewmodel/
-│ └── WeatherViewModel.kt # Business Logic
+│   └── WeatherViewModel.kt       # Business Logic
 │
-├── MainActivity.kt # Main UI screen
-└── SplashActivity.kt # Animated splash screen
+├── MainActivity.kt               # Main UI screen
+└── SplashActivity.kt             # Animated splash screen
 
+``
 ---
 
 ## 🔧 Technologies Used
