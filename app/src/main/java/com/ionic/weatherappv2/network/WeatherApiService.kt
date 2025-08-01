@@ -13,7 +13,8 @@ interface WeatherApi {
         @Query("q") city : String = "Ghaziabad",
         @Query("aqi") aqi : String = "yes"
     ) : Response<WeatherRealTimeModel>
-    suspend fun getForcast(
+    @GET("/v1/forecast.json")
+    suspend fun getForecast(
         @Query("key")apikey : String = "1b68410d0aee42f4ad262259252807",
         @Query("q")city : String = "Ghaziabad",
         @Query("days")days : Int = 14,

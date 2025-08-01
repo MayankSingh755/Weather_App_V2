@@ -1,15 +1,19 @@
 package com.ionic.weatherappv2
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.view.inputmethod.InputMethodManager
 import android.widget.SearchView
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.annotation.RequiresPermission
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import com.ionic.weatherappv2.data.realTime.AirQuality
 import com.ionic.weatherappv2.data.realTime.calculateAQI
 import java.text.SimpleDateFormat
@@ -28,77 +32,50 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-//        viewModel.getData(city = "Ghaziabad")
-
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Set system insets if needed
+        // Set system insets (status/navigation bar paddings)
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            v.updatePadding(
+                left = systemBars.left,
+                top = systemBars.top,
+                right = systemBars.right,
+                bottom = systemBars.bottom
+            )
             insets
         }
 
-        viewModel.getData(city = SearchCity().toString())
+        setupSearchView()
+        setupDateAndDay()
 
-        // Set date and day
-        val dateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
-        binding.date.text = dateFormat.format(Date())
+        // Initial weather load
+        viewModel.getData("Ghaziabad")
 
-        val dayFormat = SimpleDateFormat("EEEE", Locale.getDefault())
-        binding.day.text = dayFormat.format(Date())
-
-        // Observe real time weather data
+        // Observe Real-Time Weather Data
         viewModel.weatherResult.observe(this) { result ->
             when (result) {
                 is NetworkResponse.Loading -> {
-                    Toast.makeText(this, "Please, Wait while I am loading...☺\uFE0F", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Please wait... ☺️", Toast.LENGTH_SHORT).show()
                 }
 
                 is NetworkResponse.Success -> {
                     val weather = result.data
-                    val airQuality: AirQuality = result.data.current.air_quality
-                    binding.temp.text = "${weather.current.temp_c}°C" //Main Temp
-                    binding.cityName.text = weather.location.name // City Name
-                    binding.weather.text = weather.current.condition.text // Weather Description
-                    binding.humidity.text = "${weather.current.humidity}%" // Humidity
-                    binding.windSpeed.text = "${weather.current.wind_kph}km/h" // Wind Speed
-                    binding.Pressure.text = "${weather.current.pressure_mb}mb" // Pressure
-                    binding.visiblity.text = "${weather.current.vis_km}km" // Visibility
-                    binding.aqi.text = "${calculateAQI(airQuality)}" // AQI
-                    binding.windDirection.text = weather.current.wind_dir.toString()// Wind Direction
+                    val airQuality = weather.current.air_quality
 
-                    when (weather.current.condition.text) {
-                        "Clear Sky", "Sunny", "Clear" -> {
-                            binding.root.setBackgroundResource(R.drawable.sunny_background)
-                            binding.lottieAnimationView.setAnimation(R.raw.sunnny)
-                        }
+                    binding.temp.text = "${weather.current.temp_c}°C"
+                    binding.cityName.text = weather.location.name
+                    binding.weather.text = weather.current.condition.text
+                    binding.humidity.text = "${weather.current.humidity}%"
+                    binding.windSpeed.text = "${weather.current.wind_kph} km/h"
+                    binding.Pressure.text = "${weather.current.pressure_mb} mb"
+                    binding.visiblity.text = "${weather.current.vis_km} km"
+                    binding.aqi.text = calculateAQI(airQuality).toString()
+                    binding.windDirection.text = weather.current.wind_dir
 
-                        "Partly Clouds", "Clouds", "Overcast", "Mist", "Foggy" -> {
-                            binding.root.setBackgroundResource(R.drawable.cloud_background)
-                            binding.lottieAnimationView.setAnimation(R.raw.cloud)
-                        }
-
-                        "Light Rain", "Drizzle", "Showers" -> {
-                            binding.root.setBackgroundResource(R.drawable.rain_background)
-                            binding.lottieAnimationView.setAnimation(R.raw.rain)
-                        }
-
-                        "Drizzle", "Heavy Rain" -> {
-                            binding.root.setBackgroundResource(R.drawable.rain_background)
-                            binding.lottieAnimationView.setAnimation(R.raw.storm)
-                        }
-
-                        "Light Snow", "Moderate Snow", "Heavy Snow", "Blizzard" -> {
-                            binding.root.setBackgroundResource(R.drawable.snow_background)
-                            binding.lottieAnimationView.setAnimation(R.raw.snow)
-                        }
-                    }
-
+                    applyWeatherTheme(weather.current.condition.text)
                     binding.lottieAnimationView.playAnimation()
-
-
                 }
 
                 is NetworkResponse.Error -> {
@@ -107,47 +84,80 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        // Observe Forecast Data
         viewModel.forecastResult.observe(this) { result ->
             when (result) {
                 is NetworkResponse.Loading -> {
-                    Toast.makeText(this, "Please, Wait while I am loading...☺\uFE0F", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Fetching forecast... ☺️", Toast.LENGTH_SHORT).show()
                 }
+
                 is NetworkResponse.Success -> {
-                    val weather = result.data
-                    binding.maxTemp.text = "${weather.forecast.forecastday[0].day.maxtemp_c}°C" // Max Temp
-                    binding.maxTemp.text = "${weather.forecast.forecastday[0].day.mintemp_c}°C" // Min Temp
+                    val forecast = result.data.forecast.forecastday[0].day
+                    binding.maxTemp.text = "Max Temp Today${forecast.maxtemp_c}°C"
+                    binding.minTemp.text = "Min Temp Today${forecast.mintemp_c}°C"
                 }
+
                 is NetworkResponse.Error -> {
                     Toast.makeText(this, result.message, Toast.LENGTH_SHORT).show()
                 }
             }
         }
-
     }
 
-    private fun SearchCity() {
+
+    private fun setupSearchView() {
         val searchView = binding.searchView
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 query?.let {
                     viewModel.getData(it)
-
-                    // ✅ Hide the keyboard
-                    val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                    inputMethodManager.hideSoftInputFromWindow(searchView.windowToken, 0)
-
-                    // ✅ Clear focus from search view
+                    val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(searchView.windowToken, 0)
                     searchView.clearFocus()
                 }
                 return true
             }
 
-            override fun onQueryTextChange(newText: String?): Boolean {
-                return true
-            }
+            override fun onQueryTextChange(newText: String?): Boolean = true
         })
     }
+
+    private fun setupDateAndDay() {
+        val dateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+        val dayFormat = SimpleDateFormat("EEEE", Locale.getDefault())
+        binding.date.text = dateFormat.format(Date())
+        binding.day.text = dayFormat.format(Date())
+    }
+
+    private fun applyWeatherTheme(conditionText: String) {
+        val condition = conditionText.lowercase()
+
+        when {
+            condition.contains("clear") || condition.contains("sunny") -> {
+                binding.root.setBackgroundResource(R.drawable.sunny_background)
+                binding.lottieAnimationView.setAnimation(R.raw.sunnny)
+            }
+
+            condition.contains("cloud") || condition.contains("fog") || condition.contains("mist") || condition.contains("overcast") -> {
+                binding.root.setBackgroundResource(R.drawable.cloud_background)
+                binding.lottieAnimationView.setAnimation(R.raw.cloud)
+            }
+
+            condition.contains("rain") || condition.contains("drizzle") || condition.contains("shower") -> {
+                binding.root.setBackgroundResource(R.drawable.rain_background)
+                binding.lottieAnimationView.setAnimation(R.raw.rain)
+            }
+
+            condition.contains("snow") || condition.contains("blizzard") -> {
+                binding.root.setBackgroundResource(R.drawable.snow_background)
+                binding.lottieAnimationView.setAnimation(R.raw.snow)
+            }
+
+            else -> {
+                binding.root.setBackgroundResource(R.drawable.sunny_background)
+                binding.lottieAnimationView.setAnimation(R.raw.sunnny)
+            }
+        }
+    }
 }
-
-

@@ -1,5 +1,6 @@
 package com.ionic.weatherappv2.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -26,7 +27,7 @@ class WeatherViewModel :ViewModel() {
         viewModelScope.launch {
             try{
                 val realTimeResponse = weatherApi.getWeather("1b68410d0aee42f4ad262259252807",city)
-                val forecastResponse = weatherApi.getForcast("1b68410d0aee42f4ad262259252807",city)
+                val forecastResponse = weatherApi.getForecast("1b68410d0aee42f4ad262259252807",city)
                 if(realTimeResponse.isSuccessful && forecastResponse.isSuccessful){
                     realTimeResponse.body()?.let {
                         _weatherResult.value = NetworkResponse.Success(it)
@@ -38,6 +39,7 @@ class WeatherViewModel :ViewModel() {
                 }
             }
             catch (e : Exception){
+                Log.e("WeatherViewModel", "Error loading data", e)
                 _weatherResult.value = NetworkResponse.Error("Failed to load data, Maybe your Internet Isn't available")
                 _forecastResult.value = NetworkResponse.Error("Failed to load data, Maybe your Internet Isn't available")
             }

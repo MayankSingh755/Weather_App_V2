@@ -113,10 +113,17 @@
             app:layout_constraintStart_toStartOf="@+id/lottieAnimationView"
             app:layout_constraintTop_toBottomOf="@+id/lottieAnimationView" />
 
+        <!-- Min Temperature -->
+
+        <!-- Day (e.g. Tuesday) -->
+
+        <!-- Date (e.g. 29 July 2025) -->
+
         <TextView
             android:id="@+id/maxTemp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="76dp"
             android:layout_marginTop="8dp"
             android:fontFamily="@font/poppins_regular"
             android:text="Max: 00.00°C"
@@ -125,12 +132,11 @@
             app:layout_constraintStart_toStartOf="@id/temp"
             app:layout_constraintTop_toBottomOf="@+id/temp" />
 
-        <!-- Min Temperature -->
         <TextView
             android:id="@+id/minTemp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="4dp"
             android:fontFamily="@font/poppins_regular"
             android:text="Min: 00.00°C"
             android:textColor="@color/white"
@@ -138,9 +144,6 @@
             app:layout_constraintStart_toStartOf="@id/maxTemp"
             app:layout_constraintTop_toBottomOf="@+id/maxTemp" />
 
-        <!-- Day (e.g. Tuesday) -->
-
-        <!-- Date (e.g. 29 July 2025) -->
         <TextView
             android:id="@+id/day"
             android:layout_width="wrap_content"
@@ -360,7 +363,7 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/quicksand_bold"
                         android:gravity="center"
-                        android:text="...."
+                        android:text="North"
                         android:textColor="@color/white"
                         android:textSize="16sp" />
 
