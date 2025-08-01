@@ -38,7 +38,7 @@ A modern weather forecasting Android app that provides real-time weather informa
 ---
 
 ## 📂 Project Structure
-``
+```
 com.ionic.weatherappv2/
 │
 ├── data/
@@ -72,7 +72,7 @@ com.ionic.weatherappv2/
 ├── MainActivity.kt               # Main UI screen
 └── SplashActivity.kt             # Animated splash screen
 
-``
+```
 ---
 
 ## 🔧 Technologies Used
