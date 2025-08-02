@@ -1,27 +1,22 @@
 package com.ionic.weatherappv2
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
-import android.net.ConnectivityManager
 import android.os.Bundle
 import android.view.inputmethod.InputMethodManager
 import android.widget.SearchView
 import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.annotation.RequiresPermission
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
-import com.ionic.weatherappv2.data.realTime.AirQuality
-import com.ionic.weatherappv2.data.realTime.calculateAQI
 import java.text.SimpleDateFormat
-import java.util.Date
 import java.util.Locale
 import com.ionic.weatherappv2.databinding.ActivityMainBinding
 import com.ionic.weatherappv2.network.NetworkResponse
 import com.ionic.weatherappv2.viewmodel.WeatherViewModel
+import java.util.Date
 
 class MainActivity : AppCompatActivity() {
 
@@ -35,7 +30,6 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Set system insets (status/navigation bar paddings)
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.updatePadding(
@@ -50,10 +44,8 @@ class MainActivity : AppCompatActivity() {
         setupSearchView()
         setupDateAndDay()
 
-        // Initial weather load
         viewModel.getData("Ghaziabad")
 
-        // Observe Real-Time Weather Data
         viewModel.weatherResult.observe(this) { result ->
             when (result) {
                 is NetworkResponse.Loading -> {
@@ -62,17 +54,17 @@ class MainActivity : AppCompatActivity() {
 
                 is NetworkResponse.Success -> {
                     val weather = result.data
-                    val airQuality = weather.current.air_quality
+//                    val airQuality = weather.current.air_quality
 
                     binding.temp.text = "${weather.current.temp_c}°C"
                     binding.cityName.text = weather.location.name
                     binding.weather.text = weather.current.condition.text
-                    binding.humidity.text = "${weather.current.humidity}%"
-                    binding.windSpeed.text = "${weather.current.wind_kph} km/h"
-                    binding.Pressure.text = "${weather.current.pressure_mb} mb"
-                    binding.visiblity.text = "${weather.current.vis_km} km"
-                    binding.aqi.text = calculateAQI(airQuality).toString()
-                    binding.windDirection.text = weather.current.wind_dir
+//                    binding.humidity.text = "${weather.current.humidity}%"
+//                    binding.windSpeed.text = "${weather.current.wind_kph} km/h"
+//                    binding.Pressure.text = "${weather.current.pressure_mb} mb"
+//                    binding.visiblity.text = "${weather.current.vis_km} km"
+//                    binding.aqi.text = calculateAQI(airQuality).toString()
+//                    binding.windDirection.text = weather.current.wind_dir
 
                     applyWeatherTheme(weather.current.condition.text)
                     binding.lottieAnimationView.playAnimation()
@@ -123,11 +115,12 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setupDateAndDay() {
         val dateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
         val dayFormat = SimpleDateFormat("EEEE", Locale.getDefault())
-        binding.date.text = dateFormat.format(Date())
-        binding.day.text = dayFormat.format(Date())
+        binding.dayAndDate.text = "Today, ${dayFormat.format(Date())}, ${dateFormat.format(Date())}"
+//        dateFormat.format(Date()
     }
 
     private fun applyWeatherTheme(conditionText: String) {

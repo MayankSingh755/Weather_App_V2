@@ -7,7 +7,7 @@
     <string name="_31_c">31°C</string>
     <string name="today">Today</string>
     <string name="ghaziabad">Ghaziabad</string>
-    <string name="designed_by_mayank_singh">Designed by Mayank Singh\nPowered By Free Weather API</string>
+    <string name="designed_by_mayank_singh">Designed by Mayank Singh\nPowered By Weather.com API</string>
     <string name="aqi">AQI</string>
     <string name="pressure">Pressure</string>
     <string name="wind_direction">Wind Direction</string>
